@@ -7,7 +7,7 @@ variable "region" {
 variable "ami" {
   description = "Value of the instance ami"
   type        = string
-  default     = "ami-029fdbb88b65e9986"
+  default     = "ami-0efcece6bed30fd98"
 }
 
 variable "instance_type" {
