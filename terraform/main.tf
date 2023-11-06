@@ -16,7 +16,7 @@ resource "aws_security_group" "allow_ssh" {
   description = "Allow ssh inbound traffic"
   vpc_id      = "vpc-036d492bd7acf0f6e"
 
-
+   # inbound
    ingress {
     description      = "ssh"
     from_port        = 22
@@ -34,7 +34,7 @@ resource "aws_security_group" "allow_ssh" {
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
   }
-
+  # outbound
   egress {
     from_port        = 0
     to_port          = 0
@@ -48,6 +48,7 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
+# create key pair 
 # resource "aws_key_pair" "tf-key" {
 #   key_name   = "tf-key"
 #   public_key = tls_private_key.rsa.public_key_openssh
