@@ -1,25 +1,64 @@
-resource "aws_instance" "nginx_server" {
+
+resource "aws_instance" "nginx" {
   ami           = var.ami
   instance_type = var.instance_type
-
-  # key_name = "server"
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  key_name = "nginx"
 
   tags = {
-    Name = "nginx_server"
+    Name = "nginx"
   }
 }
 
-resource "aws_key_pair" "tf-key" {
-  key_name   = "tf-key"
-  public_key = tls_private_key.rsa.public_key_openssh
+
+resource "aws_security_group" "allow_ssh" {
+  name        = "allow_ssh"
+  description = "Allow ssh inbound traffic"
+  vpc_id      = "vpc-036d492bd7acf0f6e"
+
+
+   ingress {
+    description      = "ssh"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+   ingress {
+    description      = "http"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_ssh"
+  }
 }
 
-resource "tls_private_key" "rsa" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
+# resource "aws_key_pair" "tf-key" {
+#   key_name   = "tf-key"
+#   public_key = tls_private_key.rsa.public_key_openssh
+# }
 
-resource "local_file" "tf-key" {
-  content  = tls_private_key.rsa.private_key_pem
-  filename = "tfkey"
-}
+# resource "tls_private_key" "rsa" {
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
+# }
+
+# resource "local_file" "tf-key" {
+#   content  = tls_private_key.rsa.private_key_pem
+#   filename = "tf-key"
+# }
